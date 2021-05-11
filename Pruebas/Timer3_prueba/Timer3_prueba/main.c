@@ -41,10 +41,10 @@ void setup(){
 	
 	//OCR3A = 20 ms, OCR3B d*20ms
 
-	OCR3B = 20000*d/100; //cambiar a 200 parar simulación
-	OCR3A = 20000;
+	OCR3B = 200*d/100; //cambiar a 200 parar simulación
+	OCR3A = 200;
 	
-	//Input Capture
+	//Input Capture (PE7)
 	TCCR3B |= 1<<ICES3;
 	TIMSK3 |= 1 << ICIE3;	
 	TIFR3 |= 1 << TOIE3;
