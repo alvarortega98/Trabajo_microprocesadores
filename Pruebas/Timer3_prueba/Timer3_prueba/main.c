@@ -85,7 +85,7 @@ ISR(TIMER3_OVF_vect){
 
 uint16_t get_temp_sensor(){
 	volatile uint32_t T;
-	T =  800000/((uint32_t) Ttemp); //freq = (1/(Ttemp/8)) * 10^6
+	T =  100000/((uint32_t) Ttemp); //freq = (1/(Ttemp)) * 10^6
 					//temp = freq/10
 	return (uint16_t) T;
 }
