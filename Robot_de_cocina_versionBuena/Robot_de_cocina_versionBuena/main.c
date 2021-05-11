@@ -123,7 +123,7 @@ ISR(INT5_vect) {
 	static uint64_t T_SS = 0;
 	
 	if (bandera_antirrebotes_SS == 1) {
-		if (millis - T_SS > 5) {   //Cambiar el tiempo a 5 ms para simulación
+		if (millis - T_SS > 50) {   //Cambiar el tiempo a 5 ms para simulación
 			bandera_antirrebotes_SS = 0;
 		}
 	}
@@ -145,7 +145,7 @@ ISR(INT6_vect) {
 	static uint64_t T_UP = 0;
 	
 	if (bandera_antirrebotes_UP == 1) {
- 		if (millis - T_UP > 5) {        //Cambiar el tiempo a 5 ms para simulación
+ 		if (millis - T_UP > 50) {        //Cambiar el tiempo a 5 ms para simulación
 			bandera_antirrebotes_UP = 0;
 		}
 	}
