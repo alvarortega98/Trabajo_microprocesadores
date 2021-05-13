@@ -9,18 +9,25 @@
 #include <avr/interrupt.h>
 #include "inicio.h"
 
+volatile char estado;
+
 volatile uint8_t bandera_UP = 0;
 volatile uint8_t bandera_SS = 0;
+volatile uint8_t bandera_SS_corta = 0;
+volatile uint8_t bandera_SS_larga = 0;
 volatile uint16_t display_0;
 volatile uint16_t display_1;
 volatile uint64_t millis = 0;
 volatile uint8_t display_1_7seg;
 volatile uint8_t display_0_7seg;
+volatile uint8_t contador = 0;
 
 
 void setup() {
 	
 	cli();
+	
+	estado = 'i';
 	
 	//Las siguientes líneas de código son para habilitar las interrupciones de los botones SS (INT5) y UP (INT6).
 	EICRB = 1<<ISC50;   //PE5
@@ -51,7 +58,6 @@ void setup() {
 }
 
 void actualiza_contador() {
-	static uint16_t contador = 0;
 	if (contador < 9) {
 		contador++;
 		} else {
@@ -100,7 +106,7 @@ void inicializa_display() {
 
 
 
-int main(void) {
+int main_inico(void) {
 	
 	setup();
 	
@@ -112,13 +118,17 @@ int main(void) {
 		}
 	} while (bandera_SS == 0);
 	bandera_SS = 0;
-	
+	main_principal();
 	
 	
 }
 
 
+
+
 ISR(INT5_vect) {
+	static uint64_t Trise = 0;
+	static uint64_t Ton = 0;
 	static uint8_t bandera_antirrebotes_SS = 0;
 	static uint64_t T_SS = 0;
 	
@@ -129,15 +139,25 @@ ISR(INT5_vect) {
 	}
 	if (bandera_antirrebotes_SS == 0) {
 		if (getBit(BOTONES, SS)) {
+			Trise = millis;
 			T_SS = millis;
 			bandera_antirrebotes_SS = 1;
-			} else {
-			bandera_SS = 1;
+		} else {
+			if (estado == 'i'){
+				bandera_SS = 1;
+			}
+			Ton = millis -Trise;
 			T_SS= millis;
 			bandera_antirrebotes_SS = 1;
+			if (estado == 'p'){
+				if (Ton < 2000){
+					bandera_SS_corta = 1;
+				} else {
+					bandera_SS_larga = 1;
+				}
+			}
 		}
 	}
-	
 }
 
 ISR(INT6_vect) {
@@ -150,11 +170,13 @@ ISR(INT6_vect) {
 		}
 	}
 	if (bandera_antirrebotes_UP == 0) {
-		if (getBit(BOTONES, UP)) {
+		if (getBit(BOTONES, UP)) {			
 			T_UP = millis;
 			bandera_antirrebotes_UP = 1;
 			} else {
-			bandera_UP = 1;
+			if (estado == 'i'){
+				bandera_UP = 1;
+			}
 			T_UP = millis;
 			bandera_antirrebotes_UP = 1;
 		}

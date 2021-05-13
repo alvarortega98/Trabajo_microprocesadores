@@ -8,6 +8,7 @@
 
 
 
+
 #define BOTONES PINE
 #define SS 5
 #define UP 6
@@ -23,4 +24,8 @@ void setup();
 void actualiza_contador();
 void actualiza_display();
 void inicializa_display();
+
+uint16_t get_temp_sensor();
+uint16_t getWeight();
+void setup_principal();
 
