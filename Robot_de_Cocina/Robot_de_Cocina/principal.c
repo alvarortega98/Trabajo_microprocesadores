@@ -6,7 +6,10 @@
  */ 
 #include <avr/io.h>
 #include <avr/interrupt.h>
-#include "inicio.h"
+#include "RobotCocina.h"
+#include "FakeAPI.h"
+
+volatile extern char estado;
 
 volatile extern uint8_t bandera_SS;
 volatile extern uint8_t bandera_SS_corta;
@@ -28,6 +31,9 @@ volatile uint16_t Ton;
 volatile uint8_t flag_gA;
 volatile uint8_t flag_H;
 volatile uint16_t weight;
+
+volatile uint16_t t_fin=111;
+
 
 void setup_principal(){
 	cli();
@@ -94,8 +100,8 @@ void setup_principal(){
 	
 	//OCR3A = 20 ms, OCR3B d*20ms
 
-	OCR3B = 200*0.4/100; //cambiar a 200 parar simulación
-	OCR3A = 200;
+	OCR3B = 20000*0.4/100; //cambiar a 200 parar simulación
+	OCR3A = 20000;
 	
 	//Input Capture (PE7)
 	TCCR3B |= 1<<ICES3;
@@ -115,7 +121,7 @@ void main_principal(){
 	static uint16_t dM;
 	static uint16_t dH;
 	static uint16_t temperatura_deseada;
-	static uint16_t t_fin;
+	
 	
 	setup_principal();
 	
@@ -130,7 +136,8 @@ void main_principal(){
 		}
 		if (flag_gA == 1){
 			weight = getWeight();
-			getAction(contador, secs, weight);	
+			getAction(contador, secs, weight);
+			t_fin = getTimeToEnd();	
 			dM = getMotorDutyCycle();
 			OCR0B = dM * OCR0A / 1000;
 			flag_gA = 0;
@@ -138,44 +145,73 @@ void main_principal(){
 		if (flag_H == 1){
 			temperatura = get_temp_sensor();
 			temperatura_deseada = getTemperature();
-			dH = getHeaterDutyCycle();
+			dH = getHeaterDutyCycle(temperatura_deseada, temperatura);
 			OCR3B = dH * OCR3A / 1000;
 			flag_H = 0;
 		}
-		t_fin = getTimeToEnd();
-	}while(t_fin != 0);
+		
+	}while(t_fin > 0);
 	
 	if (t_fin == 0){
-		main_fin_programa();
+		//main_fin_programa();
 	} else {
-		main_cancelar();
+		//main_cancelar();
 	}
 }
 
 //---TIMER1-------------------------------------------------------------------------------------------------------
 ISR(TIMER1_COMPA_vect) {
-	deci++;
-	flag_H = 1;
+	//solo se ejecuta en elprograma principal
+	if (estado == 'p'){
+		deci++;
+		flag_H = 1;
+	}
+	
 	//OCR1A += 3125;
-	OCR1A += 31;
+	OCR1A += 3125;
 }
 
 ISR(TIMER1_COMPB_vect) {
-	flag_gA = 1;
+	static uint8_t display_mode = 0;
+	
+	//solo se ejecuta en el programa principal
+	if (estado == 'p'){
+		flag_gA = 1;
+	}
+	
+	
+//--Modo pausa, parpadear displays ---------
+	if (estado == 's'){
+		display_mode =~ display_mode;
+		if (display_mode == 1){
+			display_1 = (t_fin/60)/10;
+			display_0 = (t_fin/60)%10;
+		} else {
+			display_1 = 10;
+			display_0 = 10;
+		}
+		actualiza_display();
+	}
+//------------------------------------------
 	//OCR1B += 15625;
-	OCR1B += 156;
+	OCR1B += 15625;
+	
 }
 
 ISR(TIMER1_COMPC_vect) {
-	//change displays
-	secs++;
-	OCR1C += 312;
+	//solo se ejecuta en el programa principal
+	if (estado == 'p'){
+		//change displays
+		secs++;
+	}
+	OCR1C += 31250;
 	//OCR1C += 31250;
 }
 
 ISR ( TIMER1_CAPT_vect ) {
 	
-	uint16_t Trise, Tfall;
+	static uint16_t Trise = 0;
+	static uint16_t Tfall = 0;
 	
 	if (TCCR1B & (1 << ICES1)) {
 		TCCR1B &= ~(1 << ICES1);
@@ -220,6 +256,4 @@ uint16_t get_temp_sensor(){
 	return (uint16_t) T;
 }
 //-------------------------------------------------------------------------------------------------------------------------------
-
-
 

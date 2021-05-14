@@ -7,9 +7,9 @@
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
-#include "inicio.h"
+#include "RobotCocina.h"
 
-volatile char estado;
+volatile char estado; //i:inicio, p:principal, s: pausa, c: cancelar, f:fin
 
 volatile uint8_t bandera_UP = 0;
 volatile uint8_t bandera_SS = 0;
@@ -28,6 +28,20 @@ void setup() {
 	cli();
 	
 	estado = 'i';
+	
+	//paro los timers del programa principal
+	//Paro el timer 0
+	TCCR0B |= 1<<CS00;
+	TCCR0B |= 1<<CS01;
+	TCCR0B |= 1<<CS02;
+	//Paro el timer 1
+	TCCR1B |= 1<<CS10;
+	TCCR1B |= 1<<CS11;
+	TCCR1B |= 1<<CS12;
+	//Paro el timer 3
+	TCCR3B |= 1<<CS30;
+	TCCR3B |= 1<<CS31;
+	TCCR3B |= 1<<CS32;
 	
 	//Las siguientes líneas de código son para habilitar las interrupciones de los botones SS (INT5) y UP (INT6).
 	EICRB = 1<<ISC50;   //PE5
@@ -106,21 +120,21 @@ void inicializa_display() {
 
 
 
-int main_inico(void) {
+int main(void) {
+	do{	
+		setup();
+		
+		do {
+			if (bandera_UP == 1) {
+				actualiza_contador();
+				actualiza_display();
+				bandera_UP = 0;
+			}
+		} while (bandera_SS == 0);
+		bandera_SS = 0;
+		main_principal();
 	
-	setup();
-	
-	do {
-		if (bandera_UP == 1) {
-			actualiza_contador();
-			actualiza_display();
-			bandera_UP = 0;
-		}
-	} while (bandera_SS == 0);
-	bandera_SS = 0;
-	main_principal();
-	
-	
+	} while(1);
 }
 
 
@@ -133,7 +147,7 @@ ISR(INT5_vect) {
 	static uint64_t T_SS = 0;
 	
 	if (bandera_antirrebotes_SS == 1) {
-		if (millis - T_SS > 50) {   //Cambiar el tiempo a 5 ms para simulación
+		if (millis - T_SS > 5) {   //Cambiar el tiempo a 5 ms para simulación
 			bandera_antirrebotes_SS = 0;
 		}
 	}
@@ -143,7 +157,7 @@ ISR(INT5_vect) {
 			T_SS = millis;
 			bandera_antirrebotes_SS = 1;
 		} else {
-			if (estado == 'i'){
+			if ((estado == 'i')||(estado == 's')){
 				bandera_SS = 1;
 			}
 			Ton = millis -Trise;
@@ -185,7 +199,10 @@ ISR(INT6_vect) {
 }
 
 ISR(TIMER2_COMPA_vect) {
-	millis++;
+	//Cuando el sistema está en pausa, cancelar o fin de programa no se cuentan milisegundos
+	if((estado == 'i')||(estado == 'p')){
+		millis++;
+	}
 }
 
 ISR(TIMER2_COMPB_vect) {
@@ -202,5 +219,3 @@ ISR(TIMER2_COMPB_vect) {
 		SEGMENTOS = display_0_7seg;
 	}
 }
-
-

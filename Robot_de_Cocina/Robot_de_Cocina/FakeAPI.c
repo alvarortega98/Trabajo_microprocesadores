@@ -1,16 +1,15 @@
 /*
- * Fake_api.c
+ * FakeAPI.c
  *
- * Created: 13/05/2021 12:44:34
- *  Author: alvar
+ * Created: 29/03/2021 18:52:08
+ *  Author: Yago
  */ 
-
 
 #include "FakeAPI.h"
 #include <avr/interrupt.h>
 
 #ifndef F_CPU
-#define F_CPU 8000000UL
+  #define F_CPU 8000000UL
 #endif
 
 #define CYCLES_PER_ITERATION  34 // Obtained through simulation. Check
@@ -18,6 +17,43 @@
 #define BLOCKING_LOOP(N)      for(volatile long int i = 0; i < N; i++)
 #define BLOCKING_DELAY_MS(T)  BLOCKING_LOOP(T*1000000UL/NS_PER_ITERATION/SPEED_UP_FACTOR)
 
+////////////////////////////////////////////
+// Comunes
+void setupComm() {
+	cli();
+	BLOCKING_LOOP(10);
+	sei();
+}
+
+////////////////////////////////////////////
+// Detector de monedas
+
+void sendMoney(char * total) {
+	BLOCKING_DELAY_MS(50);
+}
+
+char data[] = "Received data";
+char * receiveData() {
+	BLOCKING_DELAY_MS(50);
+	return data;
+}
+
+////////////////////////////////////////////
+// Lector de códigos de barras
+
+void sendCode(char * code){
+	BLOCKING_LOOP(4);
+}
+
+uint16_t getSpinDutyCycle(uint16_t rpm) {
+	BLOCKING_LOOP(500/CYCLES_PER_ITERATION);
+	uint16_t duty = ((2000 - rpm) >> 1) - 1; // Control proporcional fake
+	duty = (duty < 0 ? 0 : duty); // El ciclo de trabajo no puede ser negativo
+	return duty; 
+}
+
+////////////////////////////////////////////
+// Robot de cocina
 
 static uint16_t motorDutyCycle;
 static uint16_t temperature;
@@ -43,4 +79,3 @@ uint16_t getHeaterDutyCycle(uint16_t Ttarget, uint16_t Tcurrent) {
 	duty = (duty < 0 ? 0 : duty); // El ciclo de trabajo no puede ser negativo
 	return duty;
 }
-
