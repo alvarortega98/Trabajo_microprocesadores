@@ -5,8 +5,6 @@
  *  Author: alvar
  */ 
 
-
-
 #define BOTONES PINE
 #define SS 5
 #define UP 6
@@ -19,7 +17,7 @@
 #define toggleBit(P, B) (P ^= (1 << B))
 
 void setup();
-void actualiza_contador();
+void actualiza_programa();
 void actualiza_display();
 void inicializa_display();
 

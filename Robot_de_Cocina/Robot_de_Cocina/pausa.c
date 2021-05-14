@@ -15,14 +15,16 @@ volatile extern uint8_t bandera_SS;
 void setup_pausa(){
 	estado = 's';	
 	cli();
-	//Paro el timer 0
+	
+	//Se detiene el timer 0
 	TCCR0B |= 1<<CS00;
 	TCCR0B |= 1<<CS01;
 	TCCR0B |= 1<<CS02;
-	//Paro el timer 3
+	//Se detiene el timer 3
 	TCCR3B |= 1<<CS30;
 	TCCR3B |= 1<<CS31;
 	TCCR3B |= 1<<CS32;
+	
 	sei();
 }
 
@@ -36,5 +38,6 @@ void main_pausa(){
 	do{		
 	}while (bandera_SS == 0);
 	bandera_SS = 0;
+	//Se reanudan los timers para que vuelvan a contar
 	reanudar_timers();	
 }
