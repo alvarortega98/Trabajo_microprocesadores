@@ -21,12 +21,12 @@ volatile extern uint8_t display_1_7seg;
 volatile extern uint8_t display_0_7seg;
 volatile extern uint8_t contador;
 
-volatile uint16_t ovfl, ovfl_rise = 0;
+volatile uint16_t ovfl, ovfl_rise;
 volatile uint16_t Ttemp = 10000;
 volatile uint16_t temperatura;
 
-volatile uint32_t deci = 0;
-volatile uint16_t secs = 0;
+volatile uint32_t deci;
+volatile uint16_t secs;
 volatile uint16_t Ton;
 volatile uint8_t flag_gA;
 volatile uint8_t flag_H;
@@ -36,6 +36,10 @@ volatile uint16_t t_fin=111;
 
 
 void setup_principal(){
+	ovfl = 0;
+	ovfl_rise = 0;
+	deci = 0;
+	secs = 0;
 	cli();
 	
 	estado = 'p';
@@ -129,6 +133,7 @@ void main_principal(){
 		if (bandera_SS_corta == 1){
 			bandera_SS_corta = 0;
 			main_pausa();
+			estado = 'p';
 		}
 		if (bandera_SS_larga == 1){
 			bandera_SS_corta = 0;
