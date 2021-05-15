@@ -26,3 +26,5 @@ uint16_t getWeight();
 void main_principal();
 void setup_principal();
 void main_pausa();
+void main_fin_programa();
+void main_cancelar();

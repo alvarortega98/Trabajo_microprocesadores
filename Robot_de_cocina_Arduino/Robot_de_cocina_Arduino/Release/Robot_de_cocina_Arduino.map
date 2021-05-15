@@ -7,7 +7,7 @@ c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/..
 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_tablejump2.o)
                               main.o (__tablejump2__)
 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_clear_bss.o)
-                              main.o (__do_clear_bss)
+                              fin_programa.o (__do_clear_bss)
 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_subdi3.o)
                               main.o (__subdi3)
 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_cmpdi2_s8.o)
@@ -17,16 +17,19 @@ Allocating common symbols
 Common symbol       size              file
 
 bandera_SS_corta    0x1               main.o
+iterador            0x1               fin_programa.o
 estado              0x1               main.o
 display_0           0x1               main.o
 bandera_SS_larga    0x1               main.o
 t_fin               0x2               principal.o
 bandera_UP          0x1               main.o
+deci                0x4               principal.o
 contador            0x1               main.o
 display_1           0x1               main.o
 sel                 0x1               main.o
 bandera_SS          0x1               main.o
 display_0_7seg      0x2               main.o
+buzzer_en           0x1               principal.o
 display_1_7seg      0x2               main.o
 millis              0x2               main.o
 
@@ -34,6 +37,12 @@ Discarded input sections
 
  .data          0x00000000        0x0 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.6.364/gcc/dev/atmega328p/avr5/crtatmega328p.o
  .bss           0x00000000        0x0 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.6.364/gcc/dev/atmega328p/avr5/crtatmega328p.o
+ .text          0x00000000        0x0 cancelar.o
+ .data          0x00000000        0x0 cancelar.o
+ .bss           0x00000000        0x0 cancelar.o
+ .text          0x00000000        0x0 fin_programa.o
+ .data          0x00000000        0x0 fin_programa.o
+ .bss           0x00000000        0x0 fin_programa.o
  .text          0x00000000        0x0 main.o
  .data          0x00000000        0x0 main.o
  .bss           0x00000000        0x0 main.o
@@ -154,6 +163,8 @@ Linker script and memory map
 
 Address of section .data set to 0x800100
 LOAD C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.6.364/gcc/dev/atmega328p/avr5/crtatmega328p.o
+LOAD cancelar.o
+LOAD fin_programa.o
 LOAD main.o
 LOAD pausa.o
 LOAD principal.o
@@ -266,7 +277,7 @@ END GROUP
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000      0x7d8
+.text           0x00000000      0x93c
  *(.vectors)
  .vectors       0x00000000       0x68 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.6.364/gcc/dev/atmega328p/avr5/crtatmega328p.o
                 0x00000000                __vector_default
@@ -347,62 +358,68 @@ END GROUP
                 0x000000bc                __vector_20
                 0x000000c0                . = ALIGN (0x2)
  *(.text.*)
+ .text.main_cancelar
+                0x000000c0       0x70 cancelar.o
+                0x000000c0                main_cancelar
+ .text.main_fin_programa
+                0x00000130       0x20 fin_programa.o
+                0x00000130                main_fin_programa
  .text.actualiza_contador
-                0x000000c0       0x22 main.o
-                0x000000c0                actualiza_contador
+                0x00000150       0x22 main.o
+                0x00000150                actualiza_contador
  .text.actualiza_display
-                0x000000e2       0xd6 main.o
-                0x000000e2                actualiza_display
+                0x00000172       0xd6 main.o
+                0x00000172                actualiza_display
  .text.inicializa_display
-                0x000001b8       0x10 main.o
-                0x000001b8                inicializa_display
+                0x00000248       0x10 main.o
+                0x00000248                inicializa_display
  .text.setup_inicio
-                0x000001c8       0x9a main.o
-                0x000001c8                setup_inicio
+                0x00000258       0x9a main.o
+                0x00000258                setup_inicio
  .text.startup.main
-                0x00000262       0x2a main.o
-                0x00000262                main
+                0x000002f2       0x2a main.o
+                0x000002f2                main
  .text.__vector_5
-                0x0000028c      0x162 main.o
-                0x0000028c                __vector_5
+                0x0000031c      0x170 main.o
+                0x0000031c                __vector_5
  .text.__vector_3
-                0x000003ee       0xfa main.o
-                0x000003ee                __vector_3
+                0x0000048c       0xfa main.o
+                0x0000048c                __vector_3
  .text.__vector_14
-                0x000004e8       0x2e main.o
-                0x000004e8                __vector_14
+                0x00000586       0x2e main.o
+                0x00000586                __vector_14
  .text.__vector_7
-                0x00000516       0x4c main.o
-                0x00000516                __vector_7
+                0x000005b4       0x4c main.o
+                0x000005b4                __vector_7
  .text.main_pausa
-                0x00000562       0x26 pausa.o
-                0x00000562                main_pausa
+                0x00000600       0x26 pausa.o
+                0x00000600                main_pausa
  .text.setup_principal
-                0x00000588       0x46 principal.o
-                0x00000588                setup_principal
+                0x00000626       0xa6 principal.o
+                0x00000626                setup_principal
  .text.main_principal
-                0x000005ce       0x3a principal.o
-                0x000005ce                main_principal
+                0x000006cc       0x4e principal.o
+                0x000006cc                main_principal
  .text.__vector_11
-                0x00000608       0xac principal.o
-                0x00000608                __vector_11
+                0x0000071a       0xd2 principal.o
+                0x0000071a                __vector_11
  .text.__vector_12
-                0x000006b4       0xc2 principal.o
-                0x000006b4                __vector_12
+                0x000007ec       0xee principal.o
+                0x000007ec                __vector_12
  .text.libgcc.div
-                0x00000776       0x28 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_udivmodhi4.o)
-                0x00000776                __udivmodhi4
- .text.libgcc   0x0000079e        0xc c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_tablejump2.o)
-                0x0000079e                __tablejump2__
- .text.libgcc   0x000007aa       0x12 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_subdi3.o)
-                0x000007aa                __subdi3
- .text.libgcc   0x000007bc       0x18 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_cmpdi2_s8.o)
-                0x000007bc                __cmpdi2_s8
-                0x000007d4                . = ALIGN (0x2)
+                0x000008da       0x28 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_udivmodhi4.o)
+                0x000008da                __udivmodhi4
+ .text.libgcc   0x00000902        0xc c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_tablejump2.o)
+                0x00000902                __tablejump2__
+ .text.libgcc   0x0000090e       0x12 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_subdi3.o)
+                0x0000090e                __subdi3
+ .text.libgcc   0x00000920       0x18 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_cmpdi2_s8.o)
+                0x00000920                __cmpdi2_s8
+                0x00000938                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x000007d4        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
-                0x000007d4                _exit
-                0x000007d4                exit
+ .fini9         0x00000938        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
+                0x00000938                _exit
+                0x00000938                exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -421,11 +438,11 @@ END GROUP
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x000007d4        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
+ .fini0         0x00000938        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
  *(.fini0)
-                0x000007d8                _etext = .
+                0x0000093c                _etext = .
 
-.data           0x00800100        0x0 load address 0x000007d8
+.data           0x00800100        0x0 load address 0x0000093c
                 [!provide]                PROVIDE (__data_start, .)
  *(.data)
  *(.data*)
@@ -437,50 +454,54 @@ END GROUP
                 0x00800100                _edata = .
                 [!provide]                PROVIDE (__data_end, .)
 
-.bss            0x00800100       0x26
+.bss            0x00800100       0x2c
                 0x00800100                PROVIDE (__bss_start, .)
  *(.bss)
  *(.bss*)
- .bss.T_UP.1674
+ .bss.T_UP.1676
                 0x00800100        0x8 main.o
- .bss.bandera_antirrebotes_UP.1673
+ .bss.bandera_antirrebotes_UP.1675
                 0x00800108        0x1 main.o
- .bss.Trise.1664
+ .bss.Trise.1666
                 0x00800109        0x4 main.o
- .bss.T_SS.1667
+ .bss.T_SS.1669
                 0x0080010d        0x4 main.o
- .bss.bandera_antirrebotes_SS.1666
+ .bss.bandera_antirrebotes_SS.1668
                 0x00800111        0x1 main.o
- .bss.aux.1612  0x00800112        0x1 pausa.o
- .bss.display_mode_p.1630
+ .bss.aux.1614  0x00800112        0x1 pausa.o
+ .bss.display_mode_p.1635
                 0x00800113        0x1 principal.o
- .bss.display_mode.1624
+ .bss.display_mode.1629
                 0x00800114        0x1 principal.o
  *(COMMON)
- COMMON         0x00800115        0xf main.o
-                0x00800115                bandera_SS_corta
-                0x00800116                estado
-                0x00800117                display_0
-                0x00800118                bandera_SS_larga
-                0x00800119                bandera_UP
-                0x0080011a                contador
-                0x0080011b                display_1
-                0x0080011c                sel
-                0x0080011d                bandera_SS
-                0x0080011e                display_0_7seg
-                0x00800120                display_1_7seg
-                0x00800122                millis
- COMMON         0x00800124        0x2 principal.o
-                0x00800124                t_fin
-                0x00800126                PROVIDE (__bss_end, .)
-                0x000007d8                __data_load_start = LOADADDR (.data)
-                0x000007d8                __data_load_end = (__data_load_start + SIZEOF (.data))
+ COMMON         0x00800115        0x1 fin_programa.o
+                0x00800115                iterador
+ COMMON         0x00800116        0xf main.o
+                0x00800116                bandera_SS_corta
+                0x00800117                estado
+                0x00800118                display_0
+                0x00800119                bandera_SS_larga
+                0x0080011a                bandera_UP
+                0x0080011b                contador
+                0x0080011c                display_1
+                0x0080011d                sel
+                0x0080011e                bandera_SS
+                0x0080011f                display_0_7seg
+                0x00800121                display_1_7seg
+                0x00800123                millis
+ COMMON         0x00800125        0x7 principal.o
+                0x00800125                t_fin
+                0x00800127                deci
+                0x0080012b                buzzer_en
+                0x0080012c                PROVIDE (__bss_end, .)
+                0x0000093c                __data_load_start = LOADADDR (.data)
+                0x0000093c                __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x00800126        0x0
+.noinit         0x0080012c        0x0
                 [!provide]                PROVIDE (__noinit_start, .)
  *(.noinit*)
                 [!provide]                PROVIDE (__noinit_end, .)
-                0x00800126                _end = .
+                0x0080012c                _end = .
                 [!provide]                PROVIDE (__heap_start, .)
 
 .eeprom         0x00810000        0x0
@@ -522,8 +543,10 @@ END GROUP
 
 .comment        0x00000000       0x30
  *(.comment)
- .comment       0x00000000       0x30 main.o
+ .comment       0x00000000       0x30 cancelar.o
                                  0x31 (size before relaxing)
+ .comment       0x00000030       0x31 fin_programa.o
+ .comment       0x00000030       0x31 main.o
  .comment       0x00000030       0x31 pausa.o
  .comment       0x00000030       0x31 principal.o
 

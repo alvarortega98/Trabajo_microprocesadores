@@ -28,7 +28,7 @@ void setup() {
   TCCR0B |= (1<<WGM02);
 
   OCR0A = 199;
-  OCR0B = 100;
+  OCR0B = 99;
 
 
 

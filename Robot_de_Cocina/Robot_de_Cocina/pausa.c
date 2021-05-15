@@ -17,13 +17,13 @@ void setup_pausa(){
 	cli();
 	
 	//Se detiene el timer 0
-	TCCR0B |= 1<<CS00;
-	TCCR0B |= 1<<CS01;
-	TCCR0B |= 1<<CS02;
-	//Se detiene el timer 3
-	TCCR3B |= 1<<CS30;
-	TCCR3B |= 1<<CS31;
-	TCCR3B |= 1<<CS32;
+	TCCR0B &= ~(1<<CS00);
+	TCCR0B &= ~(1<<CS01);
+	TCCR0B &= ~(1<<CS02);
+	//Se detiene timer 3
+	TCCR3B &= ~(1<<CS30);
+	TCCR3B &= ~(1<<CS31);
+	TCCR3B &= ~(1<<CS32);
 	
 	sei();
 }

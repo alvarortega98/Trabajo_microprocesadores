@@ -45,17 +45,17 @@ void setup() {
 	
 	//Se detienen los timers del programa principal
 	//Se detiene el timer 0
-	TCCR0B |= 1<<CS00;
-	TCCR0B |= 1<<CS01;
-	TCCR0B |= 1<<CS02;
+	TCCR0B &= ~(1<<CS00);
+	TCCR0B &= ~(1<<CS01);
+	TCCR0B &= ~(1<<CS02);
 	//Se detiene timer 1
-	TCCR1B |= 1<<CS10;
-	TCCR1B |= 1<<CS11;
-	TCCR1B |= 1<<CS12;
+	TCCR1B &= ~(1<<CS10);
+	TCCR1B &= ~(1<<CS11);
+	TCCR1B &= ~(1<<CS12);
 	//Se detiene timer 3
-	TCCR3B |= 1<<CS30;
-	TCCR3B |= 1<<CS31;
-	TCCR3B |= 1<<CS32;
+	TCCR3B &= ~(1<<CS30);
+	TCCR3B &= ~(1<<CS31);
+	TCCR3B &= ~(1<<CS32);
 	
 	//Se habilitan las interrupciones de los botones SS (INT5) y UP (INT6).
 	EICRB = 1<<ISC50;   //PE5

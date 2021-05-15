@@ -161,6 +161,9 @@ ISR(PCINT2_vect) {
 			if (estado == 's'){
 				bandera_SS = 1;
 			}
+			if (estado == 'f'){
+				bandera_SS = 1;
+			}
 
 			Ton = millis - Trise;
 			T_SS= millis;

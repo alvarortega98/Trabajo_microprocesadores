@@ -24,6 +24,9 @@ volatile extern uint8_t display_0_7seg;
 volatile extern uint64_t millis;
 volatile extern uint8_t programa;
 
+volatile extern uint8_t iterador;
+volatile extern uint8_t buzzer_en;
+
 //Variables para calcular, mediante el IC3, la temperatura medida por el sensor.
 volatile uint16_t ovfl, ovfl_rise;
 volatile uint16_t Ttemp = 10000;
@@ -171,17 +174,18 @@ void main_principal(){
 	}while(t_fin > 0);
 	
 	if (t_fin == 0){
-		//main_fin_programa();
+		main_fin_programa();
 	} else {
-		//main_cancelar();
+		main_cancelar();
 	}
 }
 
 //---TIMER1-------------------------------------------------------------------------------------------------------
 ISR(TIMER1_COMPA_vect) {
+	
+	deci++;
 	//solo se ejecuta en elprograma principal
 	if (estado == 'p'){
-		deci++;
 		bandera_getHeaterDutyCycle = 1;
 	}
 	
@@ -199,7 +203,7 @@ ISR(TIMER1_COMPB_vect) {
 	
 	
 	//Parpadear displays (solo en modo pausa)
-	if (estado == 's'){
+	if (estado == 's') {
 		display_mode =~ display_mode;
 		if (display_mode == 1){
 			display_1 = (t_fin/60)/10;
@@ -210,10 +214,18 @@ ISR(TIMER1_COMPB_vect) {
 		}
 		actualiza_display();
 	}
-//------------------------------------------
-
-	OCR1B += 15625;
-	
+		
+	else if (estado == 'f') {
+		iterador--;
+		buzzer_en = ~buzzer_en;
+		if (buzzer_en == 0) {
+			DDRE &= (1<<PE4);
+		} 
+		else {
+			DDRE |= 1<<PE4;
+		}
+	}
+	OCR1B += 15625;	
 }
 
 ISR(TIMER1_COMPC_vect) {
