@@ -39,8 +39,8 @@ void setup() {
   TCCR0B = (1<<CS02);
   TCCR0B |= (1<<WGM02);
 
-  OCR0A = 199;
-  OCR0B = 99;
+  OCR0A = 80;
+  OCR0B = 24;
 
 
 
@@ -116,9 +116,9 @@ int main(void)
 		//USART_Transmit(USART_Receive());
 		//USART_putstring(String);
 		//printf("\nunsigned int = %u",u16Data);
-		 temperatura = get_temp_sensor();
-		 printf("temperatura = %u\n", temperatura);
-		_delay_ms(1000);
+		 //temperatura = get_temp_sensor();
+		 //printf("temperatura = %u\n", temperatura);
+		//_delay_ms(1000);
 	}
 }
 
