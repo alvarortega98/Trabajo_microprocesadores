@@ -42,6 +42,8 @@ volatile uint16_t weight;
 volatile uint8_t bandera_getAction;
 volatile uint8_t bandera_getHeaterDutyCycle;
 
+volatile uint16_t sumador_OCR0B;
+
 
 void setup_principal(){
 	USART_Init(MYUBRR);
@@ -63,7 +65,7 @@ void setup_principal(){
 	cli();
 	
 	//----TIMER 2: modo 7 y preescalado 8---------------------------------------
-	//Función: controlar el PWM del motor
+	//Función: controlar el PWM del motor 8kH
 
 	//Modo 7: Fast PWM, non-inverting mode
 	TCCR2A = (1 << WGM20);
@@ -81,6 +83,12 @@ void setup_principal(){
 	
 						
 	//--------------------------------------------------------------------------------------------------------
+	
+	//PWM heater
+	TIMSK0 |= 1<<OCIE1B;
+	OCR0B = 250;
+	DDRC |= (1<<5);
+	
 	
 	//interrupcion ICP2
 	PCICR |= 1<<PCIE1;
@@ -120,11 +128,11 @@ void main_principal(){
 			temperatura = get_temp_sensor();
 			temperatura_deseada = getTemperature();
 			dH = getHeaterDutyCycle(temperatura_deseada, temperatura);
-			//OCR3B = dH * OCR3A / 1000;
+			sumador_OCR0B = dH * 250 / 1000;
 			bandera_getHeaterDutyCycle = 0;
 		}
 		
-		printf("temperatura = %u\n", weight);
+		printf("temperatura = %u, peso = %u\n", temperatura, weight);
 	}while(t_fin > 0);
 	
 	if (t_fin > 0){
@@ -234,7 +242,20 @@ ISR(PCINT1_vect){
 
 
 uint16_t get_temp_sensor(){
-	return (Ttemp); //Periodo = (Ttemp * 8cilos/8MHz)us
+	return (10000/Ttemp); //Periodo = (Ttemp * 8cilos/8MHz)us
 	//Frecuencia = ((1/Periodo) * 10^6)Hz
 	//Temperatura =(frequencia/10)
+}
+
+
+ISR (TIMER0_COMPB_vect){
+	if (estado == 'p'){
+		if( getBit(PORTC, 5)){
+			clrBit(PORTC, 5);
+			OCR0B += 250 - sumador_OCR0B; 
+		}else{
+			setBit(PORTC, 5);
+			OCR0B = sumador_OCR0B;
+		}
+	}
 }

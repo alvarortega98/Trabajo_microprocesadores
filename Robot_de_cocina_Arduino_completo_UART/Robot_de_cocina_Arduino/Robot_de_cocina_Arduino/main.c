@@ -96,7 +96,7 @@ void setup_inicio() {
 	TIMSK1 |= 1<<OCIE1B;
 
 	//Registros de comparación:
-	OCR1A = 31250;				//0.5 sec, 15635
+	OCR1A = 6250;				//0.1 sec, 15635
 	OCR1B = 62500;				//1 sec, 31250
 	
 	
@@ -122,12 +122,10 @@ void setup_inicio() {
 	TIMSK2 = 1<<OCIE2A;
 	OCR2A = 62;
 	
-	//Se utiliza el timer 0 en modo ctc, con preescalado de 64 y con OCR1A = 125 (1ms)
-	TCCR0A |= 1<<WGM01;
-	TCCR0B |= 1<<CS00;
-	TCCR0B |= 1<<CS01;
+	//Se utiliza el timer 0 en modo normal, con preescalado de 256 y con OCR1A = 62 (1ms)
+	TCCR0B |= 1<<CS21;
 	TIMSK0 |= 1<<OCIE1A;
-	OCR0A = 250;  // 0.001s / (1s / 16*10^6 ciclos)*64 = 250 ciclos
+	OCR0A = 62;  // 0.001s / (1s / 16*10^6 ciclos)*64 = 250 ciclos
 	
 	//Seteamos entradas y salidas
 	DDRD = 0x7F;		//Display
@@ -225,6 +223,7 @@ ISR(PCINT0_vect) {
 
 ISR(TIMER0_COMPA_vect){
 	millis++;
+	OCR0A += 62;
 }
 
 ISR(TIMER2_COMPA_vect) {
